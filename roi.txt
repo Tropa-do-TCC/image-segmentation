@@ -1,0 +1,39 @@
+def convert(img, target_type_min, target_type_max, target_type):
+    imin = img.min()
+    imax = img.max()
+
+    a = (target_type_max - target_type_min) / (imax - imin)
+    b = target_type_max - a * imax
+    new_img = (a * img + b).astype(target_type)
+    return new_img
+
+aaaa = convert(pixel_array, pixel_array.min(), pixel_array.max(), np.uint8)
+
+#img = cv2.imread('images/mountain.jpg' , 0) # import image as grayscale array
+img = aaaa.copy()
+# threshold image
+img_b = cv2.GaussianBlur(img, (13, 13), 2)
+ret, img_th = cv2.threshold(img_b, 40, 255, cv2.THRESH_BINARY)
+# find contours
+(cnts,_) = cv2.findContours(img_th.copy(), cv2.RETR_TREE, 
+cv2.CHAIN_APPROX_SIMPLE)
+print(str(len(cnts))+' contours detected')
+
+# find maximum area contour
+area = np.array([cv2.contourArea(cnts[i]) for i in range(len(cnts))]) #  list of all areas
+maxa_ind = np.argmax(area) # index of maximum area contour
+
+plt.figure(figsize=(10,4))
+plt.subplot(1,3,1)
+plt.imshow(img_b, cmap='gray')
+plt.title('GaussianBlurr')
+plt.subplot(1,3,2)
+plt.imshow(img_th, cmap='gray')
+plt.title('threshold')
+plt.subplot(1,3,3)
+xx = [cnts[maxa_ind][i][0][0] for i in range(len(cnts[maxa_ind]))]
+yy = [cnts[maxa_ind][i][0][1] for i in range(len(cnts[maxa_ind]))]
+#ROI.append([min(xx),max(xx),min(yy),max(yy)])
+plt.imshow(img, cmap='gray')
+plt.plot(xx,yy,'r',linewidth=3)
+plt.title('largest contour')
