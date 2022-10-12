@@ -33,6 +33,7 @@ def show_dicom_image(med_img, title=""):
     plt.imshow(med_img, cmap='gray')
     plt.title(title)
     plt.axis('off')
+    plt.show()
 
 # %%
 
