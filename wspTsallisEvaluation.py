@@ -27,11 +27,9 @@ def TsallisEntropy(hist, q):
 
     return S_q
 
-# %%
 
-
-def wspTsallisEvaluation(hist, thresholds, q):
-    thresholds = np.concatenate([[0], thresholds, [255]])
+def wspTsallisEvaluation(hist, thresholds, lb, ub, q):
+    thresholds = np.concatenate([[lb], thresholds, [ub]])
 
     n = len(thresholds)
 

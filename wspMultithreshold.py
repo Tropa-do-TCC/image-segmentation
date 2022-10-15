@@ -1,21 +1,18 @@
-# %%
+
 import numpy as np
 import skimage
 from skimage import measure
 import matplotlib.pyplot as plt
 
-# %%
-from ipynb.fs.full.wspFFA import wspFirefly
-from ipynb.fs.full.wspCS import wspCuckooSearch
-from ipynb.fs.full.wspKH import wspKrillHerd
-from ipynb.fs.full.wspEHO import wspElephantHerding
-from ipynb.fs.full.wspABC import wspArtificialBeeColony
+from wspFFA import wspFirefly
+from wspCS import wspCuckooSearch
+from wspKH import wspKrillHerd
+from wspEHO import wspElephantHerding
+from wspABC import wspArtificialBeeColony
 
-# %%
-from ipynb.fs.full.wspShannonEvaluation import wspShannonEvaluation
-from ipynb.fs.full.wspTsallisEvaluation import wspTsallisEvaluation
+from wspShannonEvaluation import wspShannonEvaluation
+from wspTsallisEvaluation import wspTsallisEvaluation
 
-# %%
 
 
 def wspGrayHistogram(hu_img):
