@@ -10,7 +10,7 @@ input_dir = "results/2EFVJVCN"
 all_slices = os.listdir(input_dir)
 
 bio_algorithms = ['FFA', 'KH', 'CS', 'ABC', 'EHO']
-q_values = np.linspace(-2, 2, num=41)
+q_values = [-2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2]
 dimension = [1,2,3,4,5]
 
 output_dir_high = ""

@@ -1,18 +1,24 @@
-
+# %%
 import numpy as np
 import skimage
-from skimage import measure
+from skimage import data, util, measure
+import pandas as pd
+from sklearn import preprocessing
+from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
 
-from wspFFA import wspFirefly
-from wspCS import wspCuckooSearch
-from wspKH import wspKrillHerd
-from wspEHO import wspElephantHerding
-from wspABC import wspArtificialBeeColony
+# %%
+from ipynb.fs.full.wspFFA import wspFirefly
+from ipynb.fs.full.wspCS import wspCuckooSearch
+from ipynb.fs.full.wspKH import wspKrillHerd
+from ipynb.fs.full.wspEHO import wspElephantHerding
+from ipynb.fs.full.wspABC import wspArtificialBeeColony
 
-from wspShannonEvaluation import wspShannonEvaluation
-from wspTsallisEvaluation import wspTsallisEvaluation
+# %%
+from ipynb.fs.full.wspShannonEvaluation import wspShannonEvaluation
+from ipynb.fs.full.wspTsallisEvaluation import wspTsallisEvaluation
 
+# %%
 
 
 def wspGrayHistogram(hu_img):
@@ -64,9 +70,6 @@ def get_high_intensity_pixels(dicom_img):
     max_value = dicom_img.max()
     min_value = dicom_img.min()
 
-    #dicom_img = (dicom_img == max_value) * max_value
-    #dicom_img[dicom_img==0] = min_value
-
     dicom_img = np.where(dicom_img == max_value, max_value, min_value)
 
     return dicom_img
@@ -74,18 +77,47 @@ def get_high_intensity_pixels(dicom_img):
 # %%
 
 
-def get_largest_region(pixel_array):
+def region_stdev(region, intensities):
+    return np.std(intensities[region])
+
+# %%
+
+
+def get_included_regions(pixel_array, original_image):
+    label_image = measure.label(pixel_array)
+    props = measure.regionprops_table(label_image, original_image, properties=[
+                                      'area', 'intensity_mean'], extra_properties=[region_stdev])
+
+    table = pd.DataFrame(props)
+
+    X_train = table.values.tolist()
+
+    scaler = preprocessing.StandardScaler().fit(X_train)
+    X_scaled = scaler.transform(X_train)
+
+    kmeans = KMeans(n_clusters=2, random_state=0).fit(X_scaled)
+    clusters = kmeans.labels_
+
+    return clusters[table['area'].idxmax()], clusters
+
+# %%
+
+
+def get_largests_regions(pixel_array, original_image):
     max_value = pixel_array.max()
     min_value = pixel_array.min()
 
     labels_mask = measure.label(pixel_array)
 
     regions = measure.regionprops(labels_mask)
-    regions.sort(key=lambda x: x.area, reverse=True)
 
     if len(regions) > 1:
-        for rg in regions[1:]:
-            labels_mask[rg.coords[:, 0], rg.coords[:, 1]] = min_value
+        big_reg_cluster, clusters = get_included_regions(
+            pixel_array, original_image)
+        for index in range(len(regions)):
+            if clusters[index] != big_reg_cluster:
+                labels_mask[regions[index].coords[:, 0],
+                            regions[index].coords[:, 1]] = min_value
 
     labels_mask[labels_mask != min_value] = max_value
     mask = labels_mask
