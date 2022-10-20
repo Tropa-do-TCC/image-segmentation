@@ -24,6 +24,8 @@ def segment_slice(dcm_file_path):
     
     dicom_image, pixel_array = dicomHandler.read_dicom_image(dicom_img)
 
+    original_image = pixel_array.copy()
+
     hu_image = dicomHandler.transform_to_hu(dicom_image, pixel_array)
 
     hist, bin_edges, best_thresholds, img_thres = wspMultithreshold.wspMultithreshold(hu_image, current_bio, current_dim, current_q)
@@ -32,7 +34,7 @@ def segment_slice(dcm_file_path):
 
     pixel_array = dicomHandler.transform_to_pixel_array(dicom_image, high_intensity)
 
-    hard_tissue = wspMultithreshold.get_largest_region(pixel_array)
+    hard_tissue = wspMultithreshold.get_largests_regions(pixel_array, original_image)
 
     dicomHandler.save_dicom(dicom_image, pixel_array, f'{output_dir_high}/{dcm_file_path}')
     dicomHandler.save_dicom(dicom_image, hard_tissue, f'{output_dir_big}/{dcm_file_path}')
