@@ -8,6 +8,21 @@ from pydicom.pixel_data_handlers.util import apply_modality_lut
 # %%
 
 
+def image_transformation(pixel_array):
+    upper_bound = int(pixel_array.max())
+    c = 1
+    b = 1.3
+
+    transformed = pixel_array**b
+    max_val = transformed.max()
+    output_img = (transformed/max_val)*upper_bound
+
+    return output_img.astype(np.uint16)
+    # return transformed
+
+# %%
+
+
 def transform_to_hu(medical_image, image):
     intercept = medical_image.RescaleIntercept
     slope = medical_image.RescaleSlope
@@ -33,7 +48,6 @@ def show_dicom_image(med_img, title=""):
     plt.imshow(med_img, cmap='gray')
     plt.title(title)
     plt.axis('off')
-    plt.show()
 
 # %%
 

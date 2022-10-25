@@ -6,6 +6,7 @@ import pandas as pd
 from sklearn import preprocessing
 from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
+import cv2
 
 # %%
 from ipynb.fs.full.wspFFA import wspFirefly
@@ -69,7 +70,7 @@ def apply_threshold(img, thresh, lb, ub):
 def get_high_intensity_pixels(dicom_img):
     max_value = dicom_img.max()
     min_value = dicom_img.min()
-
+    print(min_value, max_value)
     dicom_img = np.where(dicom_img == max_value, max_value, min_value)
 
     return dicom_img

@@ -13,9 +13,12 @@ bio_algorithms = ['FFA', 'KH', 'CS', 'ABC', 'EHO']
 def main(image, algorithm, dimension, q):
     dicom_image, pixel_array = dicomHandler.read_dicom_image(image)
 
+    transformed_pixel_array = dicomHandler.image_transformation(pixel_array)
+
     original_image = pixel_array.copy()
 
-    hu_image = dicomHandler.transform_to_hu(dicom_image, pixel_array)
+    hu_image = dicomHandler.transform_to_hu(
+        dicom_image, transformed_pixel_array)
 
     hist, bin_edges, best_thresholds, img_thres = wspMultithreshold.wspMultithreshold(
         hu_image, algorithm, dimension, q)
