@@ -12,7 +12,7 @@ def image_transformation(pixel_array):
     upper_bound = int(pixel_array.max())
     c = 1
     b = 1.3
-
+    #b = 1.7
     transformed = pixel_array**b
     max_val = transformed.max()
     output_img = (transformed/max_val)*upper_bound

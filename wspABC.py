@@ -7,8 +7,8 @@ import numpy as np
 from dataclasses import dataclass, field
 
 # %%
-from ipynb.fs.full.wspShannonEvaluation import wspShannonEvaluation
-from ipynb.fs.full.wspTsallisEvaluation import wspTsallisEvaluation
+from wspShannonEvaluation import wspShannonEvaluation
+from wspTsallisEvaluation import wspTsallisEvaluation
 
 # %%
 @dataclass
@@ -160,5 +160,3 @@ def wspArtificialBeeColony(n, dim, maxGeneration, hist, lb, ub, objFunc, q):
         t+=1
 
     return (best_sol.Position).astype(int)
-
-

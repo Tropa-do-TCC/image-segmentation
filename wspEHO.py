@@ -7,8 +7,8 @@ import numpy as np
 from dataclasses import dataclass, field
 
 # %%
-from ipynb.fs.full.wspShannonEvaluation import wspShannonEvaluation
-from ipynb.fs.full.wspTsallisEvaluation import wspTsallisEvaluation
+from wspShannonEvaluation import wspShannonEvaluation
+from wspTsallisEvaluation import wspTsallisEvaluation
 
 # %%
 

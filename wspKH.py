@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # %%
-from ipynb.fs.full.wspShannonEvaluation import wspShannonEvaluation
-from ipynb.fs.full.wspTsallisEvaluation import wspTsallisEvaluation
+from wspShannonEvaluation import wspShannonEvaluation
+from wspTsallisEvaluation import wspTsallisEvaluation
 
 # %%
 
