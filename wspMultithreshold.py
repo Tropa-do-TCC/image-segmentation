@@ -1,4 +1,4 @@
-# %%
+
 import numpy as np
 import skimage
 from skimage import data, util, measure
@@ -8,18 +8,18 @@ from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
 import cv2
 
-# %%
+
 from wspFFA import wspFirefly
 from wspCS import wspCuckooSearch
 from wspKH import wspKrillHerd
 from wspEHO import wspElephantHerding
 from wspABC import wspArtificialBeeColony
 
-# %%
+
 from wspShannonEvaluation import wspShannonEvaluation
 from wspTsallisEvaluation import wspTsallisEvaluation
 
-# %%
+
 
 
 def wspGrayHistogram(hu_img):
@@ -35,7 +35,7 @@ def wspGrayHistogram(hu_img):
 
     return hist, bin_edges, lower_bound, upper_bound
 
-# %%
+
 
 
 def apply_threshold(img, thresh, lb, ub):
@@ -64,7 +64,7 @@ def apply_threshold(img, thresh, lb, ub):
 
     return img_thres
 
-# %%
+
 
 
 def get_high_intensity_pixels(dicom_img):
@@ -75,20 +75,19 @@ def get_high_intensity_pixels(dicom_img):
 
     return dicom_img
 
-# %%
+
 
 
 def region_stdev(region, intensities):
     return np.std(intensities[region])
 
-# %%
+
 
 
 def get_included_regions(pixel_array, original_image):
-    label_image = measure.label(pixel_array)
-    props = measure.regionprops_table(label_image, original_image, properties=[
-                                      'area', 'intensity_mean'], extra_properties=[region_stdev])
-
+    label_image = measure.label(pixel_array, background=pixel_array.min())
+    props = measure.regionprops_table(label_image, original_image, properties=['area', 'intensity_mean'], extra_properties=[region_stdev])
+    
     table = pd.DataFrame(props)
 
     X_train = table.values.tolist()
@@ -98,34 +97,33 @@ def get_included_regions(pixel_array, original_image):
 
     kmeans = KMeans(n_clusters=2, random_state=0).fit(X_scaled)
     clusters = kmeans.labels_
-
+    
     return clusters[table['area'].idxmax()], clusters
 
-# %%
+
 
 
 def get_largests_regions(pixel_array, original_image):
     max_value = pixel_array.max()
     min_value = pixel_array.min()
-
-    labels_mask = measure.label(pixel_array)
+    
+    labels_mask = measure.label(pixel_array, background=pixel_array.min())
 
     regions = measure.regionprops(labels_mask)
 
     if len(regions) > 1:
-        big_reg_cluster, clusters = get_included_regions(
-            pixel_array, original_image)
+        big_reg_cluster, clusters = get_included_regions(pixel_array, original_image)
         for index in range(len(regions)):
             if clusters[index] != big_reg_cluster:
-                labels_mask[regions[index].coords[:, 0],
-                            regions[index].coords[:, 1]] = min_value
+                labels_mask[regions[index].coords[:,0], regions[index].coords[:,1]] = min_value
 
+    labels_mask[labels_mask == 0] = min_value
     labels_mask[labels_mask != min_value] = max_value
     mask = labels_mask
 
     return mask.astype(np.int16)
 
-# %%
+
 
 
 def run_firefly(hist, lb, ub, dimension, entropy, q):
@@ -141,7 +139,7 @@ def run_firefly(hist, lb, ub, dimension, entropy, q):
 
     return best_thresholds
 
-# %%
+
 
 
 def run_cuckoo_search(hist, lb, ub, dimension, entropy, q):
@@ -155,7 +153,7 @@ def run_cuckoo_search(hist, lb, ub, dimension, entropy, q):
 
     return best_thresholds
 
-# %%
+
 
 
 def run_krill_herd(hist, lb, ub, dimension, entropy, q):
@@ -168,7 +166,7 @@ def run_krill_herd(hist, lb, ub, dimension, entropy, q):
 
     return best_thresholds
 
-# %%
+
 
 
 def run_elephant_herding(hist, lb, ub, dimension, entropy, q):
@@ -185,7 +183,7 @@ def run_elephant_herding(hist, lb, ub, dimension, entropy, q):
 
     return best_thresholds
 
-# %%
+
 
 
 def run_artificial_bee_colony(hist, lb, ub, dimension, entropy, q):
@@ -198,7 +196,7 @@ def run_artificial_bee_colony(hist, lb, ub, dimension, entropy, q):
 
     return best_thresholds
 
-# %%
+
 
 
 def switch(alg):
@@ -213,7 +211,7 @@ def switch(alg):
     elif alg == 'ABC':
         return run_artificial_bee_colony
 
-# %%
+
 
 
 def wspMultithreshold(hu_img, algorithm, dimension, q):

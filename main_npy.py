@@ -6,8 +6,8 @@ import wspMultithreshold as wspMultithreshold
 import concurrent.futures
 from itertools import repeat
 
-input_dir = "results/2EFVJVCN"
-output_dir = "resultsTransNorm/2EFVJVCN"
+input_dir = "Dataset/UsevillaBone/original"
+output_dir = "Results/Test"
 all_slices = os.listdir(input_dir)
 
 bio_algorithms = ['FFA']#, 'KH', 'CS', 'ABC', 'EHO']
@@ -36,7 +36,7 @@ def segment_slice(dcm_file_path, current_bio, current_dim, current_q, output_dir
     hard_tissue = wspMultithreshold.get_largests_regions(pixel_array, original_image)
 
     dicomHandler.save_npy(pixel_array, f'{output_dir_high}/{dcm_file_path}')
-    dicomHandler.save_dicom(hard_tissue, f'{output_dir_big}/{dcm_file_path}')
+    dicomHandler.save_npy(hard_tissue, f'{output_dir_big}/{dcm_file_path}')
 
     return
 

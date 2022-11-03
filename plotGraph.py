@@ -1,8 +1,21 @@
-# %%
+
 import matplotlib.pyplot as plt
 import numpy as np
 
-# %%
+
+def plot_2_images(img, img2):
+    plt.figure(figsize=(15, 5)) 
+    plt.subplot(1,2,1)
+    plt.imshow(img,cmap='gray')
+    plt.xticks([])
+    plt.yticks([])
+
+    plt.subplot(1,2,2)
+    plt.imshow(img2,cmap='gray')
+    plt.xticks([])
+    plt.yticks([])
+
+    plt.show()
 
 
 def plot_histogram_threshold(hist, bin_edges, threshs):
@@ -11,7 +24,7 @@ def plot_histogram_threshold(hist, bin_edges, threshs):
     for t in threshs:
         plt.axvline(x=t, color='r')
 
-# %%
+
 
 
 def plot_image_histogram(img, hist, bin_edges):
@@ -28,7 +41,7 @@ def plot_image_histogram(img, hist, bin_edges):
 
     plt.show()
 
-# %%
+
 
 
 def plot_image_histogram_threshold(img, hist, bin_edges, threshs):
@@ -44,14 +57,14 @@ def plot_image_histogram_threshold(img, hist, bin_edges, threshs):
 
     plt.show()
 
-# %%
+
 
 
 def plot_histogram(hist):
     plt.plot(hist)
     plt.title('Histogram')
 
-# %%
+
 
 
 def show_image(img, title):
