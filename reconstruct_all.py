@@ -1,7 +1,7 @@
 import reconstruction
 import os
 
-input_dir = "resultsTransNorm"
+input_dir = "ResultsDCM"
 
 all_slices = os.listdir(input_dir)
 

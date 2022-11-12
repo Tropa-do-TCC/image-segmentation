@@ -6,8 +6,8 @@ import wspMultithreshold as wspMultithreshold
 import concurrent.futures
 from itertools import repeat
 
-input_dir = "results/2EFVJVCN"
-output_dir = "resultsTransNorm/2EFVJVCN"
+input_dir = "Dataset/2EFVJVCN"
+output_dir = "ResultsDCM/"
 all_slices = os.listdir(input_dir)
 
 bio_algorithms = ['FFA']#, 'KH', 'CS', 'ABC', 'EHO']
@@ -48,8 +48,8 @@ def main():
                 current_bio = bio
                 current_dim = dim
                 current_q = q_v
-                output_dir_big = output_dir + f"-BigReg-{bio}-d{dim}-q{q_v}"
-                output_dir_high = output_dir + f"-HighIntensity-{bio}-d{dim}-q{q_v}" 
+                output_dir_big = output_dir + f"BigReg-{bio}-d{dim}-q{q_v}"
+                output_dir_high = output_dir + f"HighIntensity-{bio}-d{dim}-q{q_v}" 
                 os.mkdir(output_dir_big)
                 os.mkdir(output_dir_high)
 

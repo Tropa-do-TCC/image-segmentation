@@ -8,17 +8,16 @@ from pydicom.pixel_data_handlers.util import apply_modality_lut
 
 
 
-def image_transformation(pixel_array):
+def image_transformation(pixel_array, b):
     lower_bound = int(pixel_array.min())
     upper_bound = int(pixel_array.max())
     c = 1
-    b = 1.5
+    #b = 1.5
     
     transformed = np.sign(pixel_array) * (np.abs(pixel_array)) ** (b)
     normalized = np.interp(transformed, (transformed.min(), transformed.max()), (lower_bound, upper_bound))
-    print(normalized.dtype)
+    
     return normalized.astype(np.int16)
-    #return transformed
 
 
 

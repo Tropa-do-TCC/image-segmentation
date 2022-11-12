@@ -7,21 +7,25 @@ import concurrent.futures
 from itertools import repeat
 
 input_dir = "Dataset/UsevillaBone/original"
-output_dir = "Results/Test"
+output_dir = "Results/"
 all_slices = os.listdir(input_dir)
 
-bio_algorithms = ['FFA']#, 'KH', 'CS', 'ABC', 'EHO']
-q_values = [1]
-dimension = [1,2,3]
-transform_values = [1.3, 1.7]
+bio_algorithms = ['FFA', 'KH', 'CS', 'ABC', 'EHO']
+
+q_values = np.arange(-1,1.1, 0.1)
+q_values = [int(x) if x.is_integer() else np.around(x, decimals=1) for x in np.around(q_values, decimals=1)]
+
+#dimension = [1,2,3,4,5]
+dimension = [3,4,5]
+transform_values = [1, 1.3, 1.5, 1.7]
 
 
-def segment_slice(dcm_file_path, current_bio, current_dim, current_q, output_dir_big, output_dir_high):
+def segment_slice(dcm_file_path, current_bio, current_dim, current_q, t_val, output_dir_big, output_dir_high):
     dicom_img = input_dir + '/' + dcm_file_path
     
     pixel_array = dicomHandler.read_npy_image(dicom_img)
 
-    transformed_pixel_array = dicomHandler.image_transformation(pixel_array)
+    transformed_pixel_array = dicomHandler.image_transformation(pixel_array, t_val)
 
     original_image = pixel_array.copy()
 
@@ -45,18 +49,23 @@ def main():
     for dim in dimension:
         for bio in bio_algorithms:
             for q_v in q_values:
-                current_bio = bio
-                current_dim = dim
-                current_q = q_v
-                output_dir_big = output_dir + f"-BigReg-{bio}-d{dim}-q{q_v}"
-                output_dir_high = output_dir + f"-HighIntensity-{bio}-d{dim}-q{q_v}" 
-                os.mkdir(output_dir_big)
-                os.mkdir(output_dir_high)
+                for t_v in transform_values:
+                    current_bio = bio
+                    current_dim = dim
+                    current_q = q_v
+                    current_t = t_v
+                    output_dir_big = output_dir + f"BigReg_{bio}_d{dim}_q{q_v}_t{t_v}"
+                    output_dir_high = output_dir + f"HighIntensity_{bio}_d{dim}_q{q_v}_t{t_v}"
 
-                with concurrent.futures.ProcessPoolExecutor() as executor:
-                    executor.map(segment_slice, all_slices, repeat(current_bio), repeat(current_dim), repeat(current_q), repeat(output_dir_big), repeat(output_dir_high))
+                    if not os.path.exists(output_dir_big):
+                        os.mkdir(output_dir_big)
+                    if not os.path.exists(output_dir_high):
+                        os.mkdir(output_dir_high)
 
-                print(f'Done: {bio}-d{dim}-q{q_v}')
+                    with concurrent.futures.ProcessPoolExecutor() as executor:
+                        executor.map(segment_slice, all_slices, repeat(current_bio), repeat(current_dim), repeat(current_q), repeat(current_t), repeat(output_dir_big), repeat(output_dir_high))
+
+                    print(f'Done: {bio}-d{dim}-q{q_v}-t{t_v}')
 
 if __name__ == '__main__':
     main()
