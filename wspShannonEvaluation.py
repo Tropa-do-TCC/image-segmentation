@@ -15,7 +15,7 @@ import numpy as np
 
 def ShannonEntropy(hist):
     sum_region = np.sum(hist)
-    if sum_region > 0:
+    if sum_region != 0:
         hist = hist/sum_region
 
     S = 0
