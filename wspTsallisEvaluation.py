@@ -20,7 +20,7 @@ def TsallisEntropy(hist, q):
     sums = 0
 
     for h_i in hist:
-        if h_i > 0:
+        if h_i != 0:
             sums = sums + h_i**q
 
     S_q = (1 - sums)/(q-1)
